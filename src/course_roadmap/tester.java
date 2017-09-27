@@ -14,6 +14,7 @@ import java.sql.*;
 public class tester {
 	public static void main(String args []) throws IOException
 	{
+		populatedb x = new populatedb("CSE","http://www.ucsd.edu/catalog/courses/CSE.html");
 		//This is for fetching all the courses link
 		/*
 		String base = "http://www.ucsd.edu/catalog";
@@ -26,7 +27,7 @@ public class tester {
 			String s = link.attr("href");
 			System.out.println(s);
 		}
-		*/
+		
 		
 		Document doc = Jsoup.connect("http://www.ucsd.edu/catalog/courses/CSE.html").get();
 		Elements name = doc.select("[class=\"course-name\"]");
@@ -47,10 +48,19 @@ public class tester {
 			{
 				d = description.get(j++).text();
 			}
-			System.out.printf("%s\n%s\n%s\n",firstpart,secondpart,d);
+			String descrition;
+			String preq;
+			if(d.indexOf("Prerequisites")!=-1){
+				descrition= d.substring(0, d.indexOf("Prerequisites"));
+				preq = d.substring(d.indexOf("Prerequisites"));
+			}else
+			{
+				descrition = d;
+				preq = "None";
+			}
+			System.out.printf("%s\n%s\n%s\n%s\n\n",firstpart,secondpart,descrition,preq);
 		}
 		
-		/*
 		System.out.println("\n\n***** MySQL JDBC Connection Testing *****");
 		Connection conn = null;
         try

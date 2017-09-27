@@ -1,40 +1,126 @@
 package course_roadmap;
-import java.net.*;
 import java.io.*;
 import java.util.*;
 
 import org.jsoup.Jsoup;
-import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.sql.*;
 public class populatedb {
 	
 	private static final String NBSP = "\u00a0";
-	private static final String FETCHCOURSEDESCRIPTION = "[class=\"course-description\"]";
+	private static final String FETCHCOURSEDESCRIPTION = "[class=\"course-descriptions\"]";
 	private static final String FETCHCOURSENAME = "[class=\"course-name\"]";
 	private static final String SEPARATOR = ".";
 	
 	private String major;
 	private ArrayList<String> classname;
 	private ArrayList<String> preprocessedDesc;
-	private ArrayList<classes> db;
 	private String urllink;
 	private String quartersOffered;
+	private String tableName;
+	private Connection conn;
 	
-	public populatedb(String major, String urllink)
+	public populatedb(String major, String urllink) throws IOException
 	{
+		this.tableName = major+"-table";
 		this.major = major;
 		this.urllink = urllink;
 		this.classname = new ArrayList<String>();
 		this.preprocessedDesc = new ArrayList<String>();
 		//Neeed to change this
 		this.quartersOffered = "A";
+		this.populateDb();
 	}
-	public void populateClassname()
+	public void populateDb() throws IOException
 	{
-		
+		this.getClassName();
+		this.getpreprocessedDescription(this.major);
+		this.setup();
+		for(int i = 0,j=0;i<this.classname.size()&&
+				j<this.preprocessedDesc.size();i++,j++){
+			String code = this.getClassCode(this.classname.get(i));
+			String name = this.getClassName(this.classname.get(i));
+			String desc = this.getClassDescription(this.preprocessedDesc.get(i));
+			String pre = this.getClassPrerequisites(this.preprocessedDesc.get(i));
+			this.insertDB(code,name,desc,this.quartersOffered,pre);
+		}
+	}
+	public void setup()
+	{
+		this.connectToDb();
+		this.dropTable();
+        this.createTable();
+	}
+	public void insertDB(String code,String name,String description,
+								String quarteroffered,String pre){
+        Statement stmt;
+        
+        try {
+            stmt = this.conn.createStatement();
+            String statement = "INSERT INTO `course-roadmap`.`"+tableName+"` VALUES (\""+code+"\", \""+name+"\", \""+description+
+            		"\", \""+quarteroffered+"\", \""+pre+"\" );";
+            System.out.println(statement);
+            stmt.executeUpdate(statement);
+            
+        }catch(Exception e)
+        {
+        	System.err.println("Error creating table. Error code below");
+        	System.err.println(e.getMessage());
+        	System.exit(0);
+        }
+	}
+	
+	public void connectToDb()
+	{
+        try
+        {
+        	Class.forName ("com.mysql.jdbc.Driver").newInstance ();
+        	String userName = "root";
+            String password = "password";
+            String url = "jdbc:MySQL://localhost/course-roadmap";        
+            this.conn = DriverManager.getConnection (url, userName, password);
+       
+        }catch (Exception ex)
+        {
+		       System.err.println ("Cannot connect to database server");
+			   ex.printStackTrace();
+        } 
+	}
+	
+	public void dropTable()
+	{
+		Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            String statement = "Drop TABLE `course-roadmap`.`"+this.tableName+"`";
+            stmt.executeUpdate(statement);
+            
+        }catch(com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException e)
+        {
+        	// First time. Therefore don't worry about the error.
+        }
+        catch(Exception e)
+        {
+        	System.err.println("Error dropping table. Error code below");
+        	System.err.println(e.toString());
+        }
+	}
+	public void createTable()
+	{
+		Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            String statement = "CREATE TABLE `course-roadmap`.`"+this.tableName+"` (code VARCHAR(45), "
+            		+ "name VARCHAR(100),description LONGTEXT, quarterOffered VARCHAR(45), prerequistites LONGTEXT);";
+            System.out.println(statement);
+            stmt.executeUpdate(statement);
+            
+        }catch(Exception e)
+        {
+        	System.err.println("Error creating table. Error code below");
+        	System.err.println(e.getMessage());
+        }
 	}
 	public void getClassName() throws IOException
 	{
@@ -57,7 +143,7 @@ public class populatedb {
 		Document doc = Jsoup.connect(this.urllink).get();
 		Elements description = doc.select(FETCHCOURSEDESCRIPTION);
 		
-		for(int i=0,j = 0;i<description.size();)
+		for(int i=0;i<description.size();)
 		{
 			String n = description.get(i++).text();
 			while(n.equals(NBSP) || n.length()==0)
@@ -66,11 +152,6 @@ public class populatedb {
 			}
 			preprocessedDesc.add(n);
 		}
-	}
-	
-	public void createClass()
-	{
-		return;
 	}
 	
 	public String getClassCode(String classname)
@@ -84,6 +165,24 @@ public class populatedb {
 	{
 		int dotlocation = classname.indexOf(SEPARATOR);
 		return classname.substring(dotlocation+2);
+	}
+	
+	public String getClassDescription(String description)
+	{
+		if(description.indexOf("Prerequisites")!=-1){
+			description= description.substring(0, description.indexOf("Prerequisites"));
+		}
+		return description;
+	}
+	public String getClassPrerequisites(String description)
+	{
+		if(description.indexOf("Prerequisites:")!=-1){
+			description= description.substring(description.indexOf("Prerequisites:"));
+		}else
+		{
+			description = "None";
+		}
+		return description;
 	}
 	
 	
