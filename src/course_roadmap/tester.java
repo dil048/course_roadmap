@@ -16,8 +16,8 @@ public class tester {
 	{
 		populatedb x = new populatedb("CSE","http://www.ucsd.edu/catalog/courses/CSE.html");
 		//This is for fetching all the courses link
-		/*
-		String base = "http://www.ucsd.edu/catalog";
+		
+		/*String base = "http://www.ucsd.edu/catalog";
 		Document doc = Jsoup.connect(base + "/front/courses.html").get();
 		Elements links = doc.select("[href*=../courses]");
 		
@@ -27,11 +27,32 @@ public class tester {
 			String s = link.attr("href");
 			System.out.println(s);
 		}
+		*/
+		
+		/*Document doc = Jsoup.connect("https://act.ucsd.edu/scheduleOfClasses/"
+				+ "scheduleOfClassesPreReq.htm?termCode=FA17&courseId=CSE8B").get();
+		Elements lcel = doc.getElementsByTag("table");
+		String finalresult = "None";
+		String html  = lcel.text();
+		System.out.println(html);
+		String[] parts = html.split("\\s+(?=[0-9])");
+		StringBuilder result = new StringBuilder();
+		System.out.println();
+		for(int i =1 ;i<parts.length;i++)
+			result.append("["+parts[i].substring(3)+"] and ");
+		if(result.length()!=0)
+			 finalresult = result.substring(0, result.length()-4);
+		System.out.println(finalresult);
+	*/
+		//Elements name = doc.select("[span]");
+		
+		//System.out.println(name.size());
+		//for(Element link:name){
+		//	System.out.println(name.text());
+		//}
 		
 		
-		Document doc = Jsoup.connect("http://www.ucsd.edu/catalog/courses/CSE.html").get();
-		Elements name = doc.select("[class=\"course-name\"]");
-		Elements description = doc.select("[class=\"course-descriptions\"]");
+		/*Elements description = doc.select("[class=\"course-descriptions\"]");
 		
 		for(int i=0,j = 0;i<name.size() && j<description.size();)
 		{
@@ -59,8 +80,8 @@ public class tester {
 				preq = "None";
 			}
 			System.out.printf("%s\n%s\n%s\n%s\n\n",firstpart,secondpart,descrition,preq);
-		}
-		
+		}*/
+		/*
 		System.out.println("\n\n***** MySQL JDBC Connection Testing *****");
 		Connection conn = null;
         try

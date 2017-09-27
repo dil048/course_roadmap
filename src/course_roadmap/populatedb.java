@@ -12,7 +12,10 @@ public class populatedb {
 	private static final String FETCHCOURSEDESCRIPTION = "[class=\"course-descriptions\"]";
 	private static final String FETCHCOURSENAME = "[class=\"course-name\"]";
 	private static final String SEPARATOR = ".";
-	
+	private static final String TERMCODE = "FA17";
+	private static final String URLFORPREREQUISITES ="https://act.ucsd.edu/scheduleOfClasses/"
+			+ "scheduleOfClassesPreReq.htm?termCode="+TERMCODE+"&courseId=";
+			
 	private String major;
 	private ArrayList<String> classname;
 	private ArrayList<String> preprocessedDesc;
@@ -42,7 +45,7 @@ public class populatedb {
 			String code = this.getClassCode(this.classname.get(i));
 			String name = this.getClassName(this.classname.get(i));
 			String desc = this.getClassDescription(this.preprocessedDesc.get(i));
-			String pre = this.getClassPrerequisites(this.preprocessedDesc.get(i));
+			String pre = this.getClassPrerequisites(code.replaceAll("\\s+", ""));
 			this.insertDB(code,name,desc,this.quartersOffered,pre);
 		}
 	}
@@ -60,7 +63,7 @@ public class populatedb {
             stmt = this.conn.createStatement();
             String statement = "INSERT INTO `course-roadmap`.`"+tableName+"` VALUES (\""+code+"\", \""+name+"\", \""+description+
             		"\", \""+quarteroffered+"\", \""+pre+"\" );";
-            System.out.println(statement);
+            //System.out.println(statement);
             stmt.executeUpdate(statement);
             
         }catch(Exception e)
@@ -174,15 +177,27 @@ public class populatedb {
 		}
 		return description;
 	}
-	public String getClassPrerequisites(String description)
+	public String getClassPrerequisites(String classname)
 	{
-		if(description.indexOf("Prerequisites:")!=-1){
-			description= description.substring(description.indexOf("Prerequisites:"));
-		}else
-		{
-			description = "None";
+		String urlToFetch = URLFORPREREQUISITES+classname;
+		System.out.println(urlToFetch);
+		String prerequisites = "None";
+		try {
+			Document doc = Jsoup.connect(urlToFetch).get();
+			Elements lcel = doc.getElementsByTag("table");
+			
+			String html  = lcel.text();
+			String[] parts = html.split("\\s+(?=[0-9])");
+			StringBuilder result = new StringBuilder();
+			for(int i =1 ;i<parts.length;i++)
+				result.append("["+parts[i].substring(3)+"] and ");
+			if(result.length()!=0)
+				prerequisites = result.substring(0, result.length()-4);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return description;
+		return prerequisites;
+		
 	}
 	
 	
