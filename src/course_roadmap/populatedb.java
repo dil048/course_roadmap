@@ -26,7 +26,7 @@ public class populatedb {
 	
 	public populatedb(String major, String urllink) throws IOException
 	{
-		this.tableName = major+"-table";
+		this.tableName = major;
 		this.major = major;
 		this.urllink = urllink;
 		this.classname = new ArrayList<String>();
@@ -116,7 +116,7 @@ public class populatedb {
             stmt = conn.createStatement();
             String statement = "CREATE TABLE `course-roadmap`.`"+this.tableName+"` (code VARCHAR(45), "
             		+ "name VARCHAR(100),description LONGTEXT, quarterOffered VARCHAR(45), prerequistites LONGTEXT);";
-            System.out.println(statement);
+            //System.out.println(statement);
             stmt.executeUpdate(statement);
             
         }catch(Exception e)
@@ -180,7 +180,6 @@ public class populatedb {
 	public String getClassPrerequisites(String classname)
 	{
 		String urlToFetch = URLFORPREREQUISITES+classname;
-		System.out.println(urlToFetch);
 		String prerequisites = "None";
 		try {
 			Document doc = Jsoup.connect(urlToFetch).get();
@@ -190,14 +189,22 @@ public class populatedb {
 			String[] parts = html.split("\\s+(?=[0-9])");
 			StringBuilder result = new StringBuilder();
 			for(int i =1 ;i<parts.length;i++)
-				result.append("["+parts[i].substring(3)+"] and ");
+				result.append("("+this.removeClassName(parts[i].substring(3))+") and ");
 			if(result.length()!=0)
 				prerequisites = result.substring(0, result.length()-4);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return prerequisites;
-		
+	}
+	
+	public String removeClassName(String entireName)
+	{
+		entireName = entireName.replaceAll("\\(.*?\\)", "");
+		entireName = entireName.replaceAll("\\)", "");
+		entireName = entireName.replaceAll("\\s{2,}", " ").trim();
+		System.out.println(entireName);
+		return entireName;
 	}
 	
 	

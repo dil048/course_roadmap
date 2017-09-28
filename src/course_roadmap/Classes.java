@@ -5,13 +5,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.*;
-public class classes {
-	private String prerequisites;
+
+//Classes that a major will require to complete.
+public class Classes {
+	
+	private ArrayList<String> prerequisites;
 	private String name;
 	private String code;
 	private String quartersOffered;
 	
-	public classes(String prerequisites, String name,String code){
+	public Classes(ArrayList<String> prerequisites, 
+			String name,String code){
 		this.prerequisites = prerequisites;
 		this.name = name;
 		this.code = code;
@@ -19,11 +23,7 @@ public class classes {
 	}
 	// TODO Check the quarter which the class is offered.
 	public String checkquartersOffered(){
-		
-		return "";
-	}
-	public String getPrerequisites() {
-		return prerequisites;
+		return "A";
 	}
 	public String getName() {
 		return name;
