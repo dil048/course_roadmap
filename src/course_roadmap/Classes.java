@@ -25,6 +25,7 @@ public class Classes {
 	public String checkquartersOffered(){
 		return "A";
 	}
+	
 	public String getName() {
 		return name;
 	}
@@ -36,6 +37,24 @@ public class Classes {
 	}
 	public void setCode(String code) {
 		this.code = code;
+	}
+	public boolean equals(Object o)
+	{
+		// check for null condition and if o is a Point object
+	    if (o==null || !(o instanceof Classes)) 
+	    {
+	       return false;
+	    }
+	    else 
+	    {
+	       // check if the x coordinate and y coordinate matches
+	       if (((Classes) o).getCode().equals(this.getCode()) && 
+	    		   ((Classes) o).getName().equals(this.getName()))
+	       {
+	          return true;
+	       }
+	    }
+	    return false;
 	}
 	
 

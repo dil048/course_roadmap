@@ -2,6 +2,7 @@ package course_roadmap;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.helper.Validate;
@@ -10,11 +11,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.sql.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class tester {
 	public static void main(String args []) throws IOException
 	{
-		populatedb x = new populatedb("CSE","http://www.ucsd.edu/catalog/courses/CSE.html");
+		new Major("CS26 - Computer Science(old)");
+		//new populatedb("CSE","http://www.ucsd.edu/catalog/courses/CSE.html");
 		//This is for fetching all the courses link
 		
 		/*String base = "http://www.ucsd.edu/catalog";
@@ -122,5 +131,6 @@ public class tester {
 		System.err.println ("Cannot get columns");
 	   ex.printStackTrace();
 	}*/
-}
+	    }
+	
 }
