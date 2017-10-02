@@ -3,6 +3,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.regex.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.helper.Validate;
@@ -22,7 +23,75 @@ import java.util.List;
 public class tester {
 	public static void main(String args []) throws IOException
 	{
-		new Major("CS26 - Computer Science(old)");
+		//new populatedb("MATH","http://www.ucsd.edu/catalog/courses/MATH.html");
+		/*Classes c = new Classes("CSE101");
+		ArrayList<String> a = c.getPreq();
+		for(String s:a)
+		{
+			System.out.println(s);
+		}
+		String key = "CSE100";
+		/*for(String s:a)
+		{
+			s= s.trim();
+			s = s.substring(1,s.length()-1).trim();
+			String [] parts = s.split("or");
+			for(String str: parts)
+			{
+				System.out.println(str.trim());
+			}
+		}*/
+		User u = new User("Computer Science and Engineering");
+		Classes a = new Classes("MATH20A");
+		Classes b = new Classes("MATH20B");
+		Classes c = new Classes("MATH20C");
+		Classes d = new Classes("MATH109");
+		Classes e = new Classes("MATH20D");
+		Classes f = new Classes("MATH20E");
+		Classes g = new Classes("MATH170A");
+		Classes h = new Classes("MATH18");
+		/*
+		 * 0-Before School Start
+		 * 1-Fresh Fall
+		 * 2-Fresh Winter
+		 * 3-Fresh Spring
+		 * 4-Fresh Summer session 1
+		 * 5-Fresh Summer session 2
+		 * 6-Soph Fall
+		 * 7-Soph Winter
+		 * ...
+		 */
+		//Classes x = new Classes("CSE12");
+		u.addClasses(0, a, false);
+		u.addClasses(0, b, false);
+		u.addClasses(1, c, false);
+		u.addClasses(1, h, false);
+		u.addClasses(2, d, false);
+		u.addClasses(3, e, false);
+		u.addClasses(4, f, false);
+		u.addClasses(5, g, false);
+		
+		//u.addClasses(3, a, true);
+		u.printClass();
+		//quarter [] q = u.getSchedule();
+		/*for(quarter p : q)
+		{
+			System.out.println(p.getQuarter());
+			for(Classes m : p.getClassList())
+			{
+				System.out.println(m.getClassCode());
+			}
+		}
+		//System.out.println("The size is " + u.getSchedule()[1].getClassList().size());
+		//for(Classes i : u.getSchedule()[1].getClassList())
+		//	System.out.println("The code is "+i.getCode());
+		
+		//System.out.println("The size is " + u.getSchedule()[1].getClassList().size());
+		//for(Classes i : u.getSchedule()[1].getClassList())
+		//	System.out.println("The code is "+i.getCode());
+		//System.out.println(u.canAdd(3, x));
+		//new Major("CS26 - Computer Science(old)");
+		//new Controller("CSE");
 		//new populatedb("CSE","http://www.ucsd.edu/catalog/courses/CSE.html");
 		//This is for fetching all the courses link
 		
@@ -132,5 +201,12 @@ public class tester {
 	   ex.printStackTrace();
 	}*/
 	    }
+	//Use to check if preq has been satisfy
+	private static boolean isContain(String source, String subItem){
+        String pattern = "\\b"+subItem+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(source);
+        return m.find();
+   }
 	
 }

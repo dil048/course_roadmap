@@ -7,20 +7,20 @@ public class Major {
 	private static final String basePath = "majorRequirements/";
 	
 	private ArrayList<SectionOfRequirements> listofClasses;
+	private HashSet<String> departmentInvolved;
 	//Maps major name to their String url
-	private String majorname;
 	private String path = "majorRequirements/";
 	
 	public Major(String majorname)
 	{
-		this.majorname = majorname;
+		// Need to change, will fetch from database instead.
 		this.path =basePath+majorname+".txt";
 		listofClasses = new ArrayList<>();
+		departmentInvolved = new HashSet<>();
 		this.populatelist();
 	}
-	public void populatelist()
+	private void populatelist()
 	{
-		System.out.println(this.path);
 		File f = new File(this.path);
 		Scanner sc;
 		try {
@@ -37,16 +37,41 @@ public class Major {
 		//System.out.println(f.listFiles());
 		
 	}
-	public void addTolistofClasses(String s)
+	
+	private void addTolistofClasses(String s)
 	{
 		s = s.substring(1, s.length()-1);
 		String [] parts = s.split(";");
 		int number = Integer.parseInt(parts[0]);
-		parts = parts[1].split(",");
-		this.listofClasses.add(new SectionOfRequirements(number,parts));
+		String [] classesNeeded = parts[1].split(",");
+		this.listofClasses.add(new SectionOfRequirements(number,classesNeeded));
+		String [] departments = parts[1].replaceAll(","," ").split(" ");
+		for(String str : departments)
+		{
+			if(allLetters(str))
+			{
+				this.departmentInvolved.add(str);
+			}
+		}
+		
+	}
+	private boolean allLetters(String s)
+	{
+		for(char c : s.toCharArray())
+		{
+			if(c<'A'||c>'Z')
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	public ArrayList<SectionOfRequirements> getRequirements()
 	{
 		return this.listofClasses;
+	}
+	public HashSet<String> getDepartments()
+	{
+		return this.departmentInvolved;
 	}
 }

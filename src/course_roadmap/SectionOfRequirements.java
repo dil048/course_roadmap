@@ -23,5 +23,10 @@ public class SectionOfRequirements {
 	{
 		return this.numberOfClassesNeed;
 	}
+	@Override
+	public String toString()
+	{
+		return "["+this.numberOfClassesNeed+";"+String.valueOf(this.classesNeeded)+"]";
+	}
 
 }

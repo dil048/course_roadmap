@@ -34,6 +34,7 @@ public class populatedb {
 		//Neeed to change this
 		this.quartersOffered = "A";
 		this.populateDb();
+		this.closeConnection();
 	}
 	public void populateDb() throws IOException
 	{
@@ -42,7 +43,13 @@ public class populatedb {
 		this.setup();
 		for(int i = 0,j=0;i<this.classname.size()&&
 				j<this.preprocessedDesc.size();i++,j++){
-			String code = this.getClassCode(this.classname.get(i));
+			String code = this.getClassCode(this.classname.get(i).replaceAll("\\s", ""));
+			//Remove all non-numerical characters
+			String str = code.replaceAll("\\D+","");
+			if(Integer.parseInt(str)>=200)
+			{
+				break;
+			}
 			String name = this.getClassName(this.classname.get(i));
 			String desc = this.getClassDescription(this.preprocessedDesc.get(i));
 			String pre = this.getClassPrerequisites(code.replaceAll("\\s+", ""));
@@ -115,7 +122,7 @@ public class populatedb {
         try {
             stmt = conn.createStatement();
             String statement = "CREATE TABLE `course-roadmap`.`"+this.tableName+"` (code VARCHAR(45), "
-            		+ "name VARCHAR(100),description LONGTEXT, quarterOffered VARCHAR(45), prerequistites LONGTEXT);";
+            		+ "name LONGTEXT,description LONGTEXT, quarterOffered VARCHAR(45), prerequistites LONGTEXT);";
             //System.out.println(statement);
             stmt.executeUpdate(statement);
             
@@ -137,6 +144,7 @@ public class populatedb {
 			{
 				n = name.get(i++).text();
 			}
+			//System.out.println(n);
 			classname.add(n);
 		}
 	}
@@ -152,6 +160,10 @@ public class populatedb {
 			while(n.equals(NBSP) || n.length()==0)
 			{
 				n = description.get(i++).text();
+			}
+			if(i==description.size()-1)
+			{
+				break;
 			}
 			preprocessedDesc.add(n);
 		}
@@ -189,7 +201,7 @@ public class populatedb {
 			String[] parts = html.split("\\s+(?=[0-9])");
 			StringBuilder result = new StringBuilder();
 			for(int i =1 ;i<parts.length;i++)
-				result.append("("+this.removeClassName(parts[i].substring(3))+") and ");
+				result.append("( "+this.removeClassName(parts[i].substring(3))+" ) and ");
 			if(result.length()!=0)
 				prerequisites = result.substring(0, result.length()-4);
 		} catch (IOException e) {
@@ -203,8 +215,17 @@ public class populatedb {
 		entireName = entireName.replaceAll("\\(.*?\\)", "");
 		entireName = entireName.replaceAll("\\)", "");
 		entireName = entireName.replaceAll("\\s{2,}", " ").trim();
-		System.out.println(entireName);
+		//System.out.println(entireName);
 		return entireName;
+	}
+	public void closeConnection()
+	{
+		try {
+			this.conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
