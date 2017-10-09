@@ -6,7 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.sql.*;
-public class populatedb {
+public class PopulateDepartmentClasses {
 	
 	private static final String NBSP = "\u00a0";
 	private static final String FETCHCOURSEDESCRIPTION = "[class=\"course-descriptions\"]";
@@ -24,7 +24,7 @@ public class populatedb {
 	private String tableName;
 	private Connection conn;
 	
-	public populatedb(String major, String urllink) throws IOException
+	public PopulateDepartmentClasses(String major, String urllink)
 	{
 		this.tableName = major;
 		this.major = major;
@@ -36,7 +36,7 @@ public class populatedb {
 		this.populateDb();
 		this.closeConnection();
 	}
-	public void populateDb() throws IOException
+	public void populateDb() 
 	{
 		this.getClassName();
 		this.getpreprocessedDescription(this.major);
@@ -132,9 +132,15 @@ public class populatedb {
         	System.err.println(e.getMessage());
         }
 	}
-	public void getClassName() throws IOException
+	public void getClassName() 
 	{
-		Document doc = Jsoup.connect(this.urllink).get();
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(this.urllink).get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Elements name = doc.select(FETCHCOURSENAME);
 		
 		for(int i=0;i<name.size();)
@@ -149,9 +155,15 @@ public class populatedb {
 		}
 	}
 	
-	public void getpreprocessedDescription(String majorname) throws IOException
+	public void getpreprocessedDescription(String majorname)
 	{
-		Document doc = Jsoup.connect(this.urllink).get();
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(this.urllink).get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Elements description = doc.select(FETCHCOURSEDESCRIPTION);
 		
 		for(int i=0;i<description.size();)
@@ -173,6 +185,7 @@ public class populatedb {
 	{
 		// Class comes in the format of CSE XXX. class name. locate the dot
 		int dotlocation = classname.indexOf(SEPARATOR);
+		System.out.println(classname);
 		return classname.substring(0,dotlocation);
 	}
 	
@@ -184,10 +197,16 @@ public class populatedb {
 	
 	public String getClassDescription(String description)
 	{
-		if(description.indexOf("Prerequisites")!=-1){
-			description= description.substring(0, description.indexOf("Prerequisites"));
+		if(this.major.equals("CSE")||this.major.equals("ECE")||this.major.equals("MATH"))
+		{
+			if(description.indexOf("Prerequisites")!=-1){
+				description= description.substring(0, description.indexOf("Prerequisites"));
+			}
+			return description;
+		}else
+		{
+			return " ";
 		}
-		return description;
 	}
 	public String getClassPrerequisites(String classname)
 	{
@@ -204,10 +223,10 @@ public class populatedb {
 				result.append("( "+this.removeClassName(parts[i].substring(3))+" ) and ");
 			if(result.length()!=0)
 				prerequisites = result.substring(0, result.length()-4);
+			return prerequisites;
 		} catch (IOException e) {
-			e.printStackTrace();
+			return getClassPrerequisites(classname);
 		}
-		return prerequisites;
 	}
 	
 	public String removeClassName(String entireName)

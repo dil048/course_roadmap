@@ -66,13 +66,10 @@ public class quarter {
 	
 	public boolean contains(String s)
 	{
-		System.out.println("Checking if the class "+ s+" exits in classlist");
 		for(Classes c : this.classlist)
 		{
-			System.out.println("The class I am looking at is "+ c.getClassCode());
 			if(c.getClassCode().equals(s))
 			{
-				System.out.println("Match!! "+c.getClassCode()+"is in the list");
 				return true;
 			}
 		}

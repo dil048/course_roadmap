@@ -64,34 +64,31 @@ public class User {
 		{
 			return 0;
 		}
-		System.out.println("Checking to see if we can add " + c.getClassCode());
-		for(int i =0;i<quarter;i++)
+		for(int i =0;i<schdule.length;i++)
 		{
 			if(this.schdule[i].contains(c.getClassCode()))
 			{
-				System.out.println(c.getClassCode()+" already taken");
 				return 1;
 			}
 		}
 		ArrayList<String> preq = c.getPreq();
 		int count = 0;
+		System.out.println("preq is"+preq.get(0));
 		if(preq.get(0).equals("None"))
 		{
-			System.out.println(c.getClassCode()+" has no preq");
 			return 0;
 		}
+		
 		for(String s:preq)
 		{
 			s= s.trim();
 			s =s.substring(1,s.length()-1).trim();
 			String [] parts = s.split("or");
 			boolean satisfied = false;
-			System.out.println("Entire section of preq string "+ s);
 			for(String str: parts)
 			{
 				for(int i =0;i<quarter;i++)
 				{
-					System.out.println("The class I am checking is "+ str);
 					if(this.schdule[i].contains(str.trim()))
 					{
 						satisfied=true;
@@ -104,8 +101,6 @@ public class User {
 				satisfied = false;
 			}
 		}
-		System.out.println("count is"+count);
-		System.out.println("the preq size is "+preq.size());
 		if(count == preq.size())
 		{
 			return 0;

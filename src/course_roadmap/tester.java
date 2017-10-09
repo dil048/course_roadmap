@@ -42,14 +42,36 @@ public class tester {
 			}
 		}*/
 		User u = new User("Computer Science and Engineering");
-		Classes a = new Classes("MATH20A");
+		String response = "";
+		do
+		{
+			System.out.println("Enter a to add class, p to print schedule, q to quit");
+			Scanner sc = new Scanner(System.in);
+			response = sc.next();
+			if(response.toLowerCase().equals("a"))
+			{
+				System.out.println("What classes?");
+				Classes c = new Classes(sc.next());
+				System.out.println("What quarter?");
+				u.addClasses(Integer.parseInt(sc.next()), c, false);
+			}else if(response.toLowerCase().equals("p"))
+			{
+				u.printClass();
+			}
+			
+		}while(!response.equals("q"));
+		
+		System.out.println("Bye!");
+		/*Classes a = new Classes("MATH20A");
 		Classes b = new Classes("MATH20B");
 		Classes c = new Classes("MATH20C");
 		Classes d = new Classes("MATH109");
 		Classes e = new Classes("MATH20D");
 		Classes f = new Classes("MATH20E");
 		Classes g = new Classes("MATH170A");
-		Classes h = new Classes("MATH18");
+		Classes h = new Classes("MATH18");*/
+		
+		
 		/*
 		 * 0-Before School Start
 		 * 1-Fresh Fall
@@ -62,17 +84,8 @@ public class tester {
 		 * ...
 		 */
 		//Classes x = new Classes("CSE12");
-		u.addClasses(0, a, false);
-		u.addClasses(0, b, false);
-		u.addClasses(1, c, false);
-		u.addClasses(1, h, false);
-		u.addClasses(2, d, false);
-		u.addClasses(3, e, false);
-		u.addClasses(4, f, false);
-		u.addClasses(5, g, false);
 		
 		//u.addClasses(3, a, true);
-		u.printClass();
 		//quarter [] q = u.getSchedule();
 		/*for(quarter p : q)
 		{
