@@ -37,7 +37,7 @@ public class Classes {
         	Class.forName ("com.mysql.jdbc.Driver").newInstance ();
         	String userName = "root";
             String password = "password";
-            String url = "jdbc:MySQL://localhost/course-roadmap";        
+            String url = "jdbc:MySQL://127.0.0.1:3306/course-roadmap";        
             this.conn = DriverManager.getConnection (url, userName, password);
        
         }catch (Exception ex)
