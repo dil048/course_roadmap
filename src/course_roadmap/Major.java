@@ -70,8 +70,4 @@ public class Major {
 	{
 		return this.listofClasses;
 	}
-	public HashSet<String> getDepartments()
-	{
-		return this.departmentInvolved;
-	}
 }

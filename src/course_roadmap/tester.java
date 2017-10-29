@@ -23,6 +23,7 @@ import java.util.List;
 public class tester {
 	public static void main(String args []) throws IOException
 	{
+		
 		//new populatedb("MATH","http://www.ucsd.edu/catalog/courses/MATH.html");
 		/*Classes c = new Classes("CSE101");
 		ArrayList<String> a = c.getPreq();

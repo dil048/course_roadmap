@@ -88,7 +88,7 @@ public class PopulateDepartmentClasses {
         	Class.forName ("com.mysql.jdbc.Driver").newInstance ();
         	String userName = "root";
             String password = "password";
-            String url = "jdbc:MySQL://localhost/course-roadmap";        
+            String url = "jdbc:MySQL://128.54.228.11/course-roadmap";        
             this.conn = DriverManager.getConnection (url, userName, password);
        
         }catch (Exception ex)
